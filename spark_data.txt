@@ -1,0 +1,97 @@
+department_data = [
+    ('HR',100),
+    ('Supply',200),
+    ('Sales',300),
+    ('Stock',400)
+    ]
+
+department_schema = ['dept_name','dept_id']
+
+dept_df = spark.createDataFrame(data=department_data, schema=department_schema)
+display(dept_df)
+
+
+
+--------------------------------------------
+employee_data =[(10, 'raj kumar','1999','100','M',2000),
+                (20, 'rahul kumar','2002','200','F',8000),
+                (30, 'raja singh','2010','100',None,6000),
+                (40, 'raghava','2004','100','M',9000),
+                (50, 'rama krishna','2008','400','M',14000),
+                (60, 'rasul','2014','500','F',12000),
+                (70, 'kumar Chand ','2004','600','M',7000)]
+
+employee_schema =['employee_id','name','doj','employee_dept_id','gender','salary']
+
+df_emp= spark.createDataFrame(data=employee_data, schema=employee_schema)
+df_emp.display()
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+array_appliance = [
+    ('Raja',['TV','Refrigerator','Oven','AC']),
+    ('Rahgava',['AC','Washing Machinee',None]),
+    ('Ram',['Grinder','TV']),
+    ('Ramesh',['Refrigerator','TV',None]),
+     ('Rajesh',None)
+]
+df_app = spark.createDataFrame(data=array_appliance, schema=['name','appliances'])
+df_app.printSchema()
+display(df_app)
+-------------------------------------------------------------------------------------------------------
+map_brand = [
+    ('Raja',{'TV':'LG','Refrigerator':'Samsung','Oven':'Phillips','AC':'Voltas'}),
+    ('Rahgava',{'AC':'Samsung','Washing Machinee':'LG'}),
+    ('Ram',{'Grinder':'Preethi','TV':''}),
+    ('Ramesh',{'Refrigerator':'LG','TV':'Croma'}),
+     ('Rajesh',None)
+]
+df_brand = spark.createDataFrame(data= map_brand, schema=['name','brand'])
+df_brand.printSchema()
+display(df_brand)
+------------------------------------------------------------------------------------------------------
+#Case Function(when.otherwise):
+
+data_student = [('raja','science',80,'p',90),
+                ('rakesh','maths',90,'p',70),
+                ('rama','english',20,'f',80),
+                ('ramesh','science',45,'f',75),
+                ('rajesh','maths',30,'f',50),
+                ('raghav','maths',None,'NA',70)]
+Schema = ['name','subject','Mark','status','attendence']
+df = spark.createDataFrame(data=data_student, schema = Schema)
+display(df)
+
+----------------------------------------------------------------------------------------
+#union and UnionAll:
+
+employee_data = ([100,'Stephen','1999','100','M',2000],
+                 [200,'Phillip','2002','200','M',8000],
+                 [300,'John','2010','100','',6000])
+Schema = ['employee_id','name','doj','employee_dept_id','gender','salary']
+df = spark.createDataFrame(data=employee_data, schema=Schema)
+display(df)
+
+employee_data = ([400,'Nancy','2008','400','F',1000],
+                 [500,'Rose','2004','500','F',5000],
+                 [300,'John','2010','100','',6000])
+Schema = ['employee_id','name','doj','employee_dept_id','gender','salary']
+df1 = spark.createDataFrame(data=employee_data, schema=Schema)
+display(df1)
+
+---------------------------------------------------------------------------
+
+bad records handling:
+
+from pyspark.sql.types import StructType, StructField, StringType, IntergerType
+
+schema = StructType([ \
+         StructField('Month',StringType(), True), \
+         StructField('Emp_Count',IntergerType(), True), \
+         StructField('Production_unit',IntergerType(), True), \
+         StructField('Expense',IntergerType(), True), \
+         StructField('_corrupt_record',StringType(), True)
+])
+
+df = spark.read.format('csv').option('mode','PERMISSIVE').option('header','true').schema(schema).load('filepath')
+
+-----------------------------------------------------------------------------

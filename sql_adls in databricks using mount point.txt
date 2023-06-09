@@ -1,0 +1,39 @@
+jdbcHostname = "venkeyserver.database.windows.net"
+jdpcport = 1433
+jdbcDatabase = "venkeydb"
+jdbcUsername = "venkeyadmin"
+jdbcPassword = "Venkat@123"
+jdbcDriver = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+
+jdbcurl = f"jdbc:sqlserver://{jdbcHostname}:{jdpcport};databaseName={jdbcDatabase};user={jdbcUsername};password={jdbcPassword}"
+
+
+df1 = spark.read.format('jdbc').option('url',jdbcurl).option('dbtable','SalesLT.Product').load()
+display(df1)
+--------------------------------------------------------
+
+## Using ADLS access key directly
+
+spark.conf.set(
+    "fs.azure.account.key.adlsgen23105.dfs.core.windows.net",
+    "+ZOBleAyG1iv97pceU5KUOkwSpmCK85d2f1u2iay4PzCL8uR5wMFqYIcjtCnPnqu08k9PD0qtA4Q+AStrf9XzA=="
+)
+----
+dbutils.fs.ls("abfss://container-venkeyde@adlsgen23105.dfs.core.windows.net")
+
+#set the data lake file location
+file_location = "abfss://container-venkeyde@adlsgen23105.dfs.core.windows.net"
+
+#read in the data to dataframe df
+df = spark.read.format('csv').option('inferschema','true').option('header','true').option('delimiter',',').load(file_location)
+
+#display the dataframe
+display(df)
+
+###Method2: Creating Mount Point Using ADLS Access Keys
+
+dbutils.fs.mount(
+    source = "wasbs://container-venkeyde@adlsgen23105.blob.core.windows.net",
+    mount_point = "/mnt/adls_test",
+    extra_configs = {"fs.azure.account.key.adlsgen23105.blob.core.windows.net":"+ZOBleAyG1iv97pceU5KUOkwSpmCK85d2f1u2iay4PzCL8uR5wMFqYIcjtCnPnqu08k9PD0qtA4Q+AStrf9XzA=="})
+
